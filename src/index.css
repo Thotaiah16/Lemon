@@ -11,3 +11,33 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+:root{
+  --brand-accent: #eec32d;
+  --brand-accent-dark: #d6af1e;
+  --muted: #6b6b6b;
+  --page-bg: #fbfaf8;
+}
+
+h1,h2,h3,h4,h5,h6{
+  margin:0 0 10px 0;
+  color: #1b1b1b;
+  line-height:1.2;
+  font-weight:600;
+}
+h1{font-size:36px;font-family: 'Markazi Text', serif}
+h2{font-size:30px}
+h3{font-size:22px}
+h4{font-size:18px}
+h5{font-size:16px}
+h6{font-size:14px}
+
+p{margin:0 0 12px 0;color:#333;line-height:1.6;font-size:15px}
+span{color:var(--muted);font-size:14px}
+
+nav{display:block}
+ul{margin:0;padding:0;list-style:none}
+li{margin:0;padding:0}
+
+img{max-width:100%;height:auto;display:block;border-radius:8px}
+
