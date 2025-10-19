@@ -13,11 +13,13 @@ export default function Hero({ imageSrc = '/assets/restauranfood.jpg' }) {
         </p>
         <button className="hero-btn">Reserve a Table</button>
       </div>
-       <section class="image">
-      <div className="image-content">
-        <img src={imageSrc} alt="featured dish" />
-      </div>
+
+       <section className="image">
+        <div className="image-content">
+          <img src={imageSrc} alt="featured dish" />
+        </div>
       </section>
     </div>
+
   );
 }

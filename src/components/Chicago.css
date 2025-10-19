@@ -1,0 +1,140 @@
+.chicago-band {
+  background: #fff;
+  padding: 60px 0 60px 0;
+   margin-bottom: 60px;
+}
+
+.chicago-inner {
+  width: clamp(320px, 92%, 1100px);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.2fr 360px;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.chicago-text {
+  margin-top: 10px;
+}
+
+.chicago-text h1 {
+  font-family: 'Markazi Text', serif;
+  font-size: 48px;
+  margin: 0 0 2px 0;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+
+.chicago-text h2 {
+  font-family: 'Karla', sans-serif;
+  font-size: 22px;
+  margin: 0 0 20px 0;
+  font-weight: 500;
+  color: #555;
+}
+
+.chicago-text p {
+  font-family: 'Karla', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #222;
+  margin: 0 0 14px 0;
+  max-width: 34em;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.chicago-collage {
+  position: relative;
+  width: 340px;
+  height: 340px;
+  min-width: 200px;
+  min-height: 200px;
+}
+
+.collage-img {
+  position: absolute;
+  object-fit: cover;
+  border-radius: 7px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+  background: #eee;
+}
+
+/* Chef image (back, lower z-index) */
+.collage-img-front {
+  width: 272px;
+  height: 383px;
+  right: 190px;
+  top: 80px;
+  z-index: 1;
+}
+
+/* Restaurant image (front, higher z-index) */
+.collage-img-back {
+  width: 272px;
+  height: 383px;
+  left: 90px;
+  top: 0;
+  z-index: 2;
+}
+
+@media (max-width: 900px) {
+  .chicago-inner {
+    grid-template-columns: 1fr 230px;
+    gap: 6px;
+  }
+  .chicago-collage {
+    width: 230px;
+    height: 230px;
+  }
+  .collage-img-front, .collage-img-back {
+    width: 150px;
+    height: 150px;
+  }
+  .collage-img-front {
+    left: 0;
+    top: 50px;
+  }
+  .collage-img-back {
+    left: 60px;
+    top: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .chicago-inner {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .chicago-collage {
+    width: 96vw;
+    height: 140px;
+    min-width: 0;
+    min-height: 0;
+  }
+  .collage-img-front, .collage-img-back {
+    position: static;
+    display: inline-block;
+    width: 48vw;
+    height: 120px;
+    margin: 0 2vw 8px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  }
+}
+
+@media (max-width: 500px) {
+  .chicago-band {
+    padding: 28px 0 28px 0;
+  }
+  .chicago-text h1 {
+    font-size: 28px;
+  }
+  .chicago-collage {
+    width: 98vw;
+    height: 110px;
+  }
+  .collage-img-front, .collage-img-back {
+    width: 44vw;
+    height: 90px;
+  }
+}

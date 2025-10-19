@@ -1,0 +1,92 @@
+.testimonials-band{
+  width:100%;
+  background:#465751;
+  padding:56px 0;
+  box-sizing:border-box;
+}
+.testimonials{
+  width: clamp(320px, 92%, 1200px);
+  margin: 0 auto;
+  text-align:center;
+}
+.testimonials h2{
+  font-family: 'Markazi Text', serif;
+  font-size:22px;
+  color:#2b2b2b;
+  margin:0 0 28px 0;
+}
+.testimonials-grid{
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  gap: 32px;
+  flex-wrap: nowrap;
+  margin-top: 32px;
+}
+.testimonial{
+  width: 240px;
+  min-height:175px;
+  background:#fff;
+  border-radius:8px;
+  padding:18px 16px 16px 16px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);
+  position:relative;
+  box-sizing:border-box;
+  text-align:left;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.testimonial::before{
+  content: 'Rating';
+  position:absolute;
+  top:12px;
+  left:16px;
+  font-weight:700;
+  font-size:12px;
+  color:#222;
+}
+.testimonial-header {
+  display: flex;
+  align-items: center;
+  margin-top: 18px;
+  margin-bottom: 8px;
+}
+.testimonial-header img{
+  width:40px;
+  height:40px;
+  object-fit:cover;
+  border-radius:6px;
+  margin-right: 12px;
+  margin-top: 0;
+  float: none;
+}
+.testimonial-name {
+  font-weight: 700;
+  font-size: 15px;
+  color: #222;
+  margin: 0;
+  white-space: nowrap;
+}
+.testimonial blockquote{margin:0;color:#333;display:block;overflow:hidden}
+.testimonial blockquote p{font-size:13px;line-height:1.4;margin:10px 0 0 0}
+.testimonial cite{display:block;margin-top:10px;color:#6b6b6b;font-size:13px;font-weight:700}
+
+/* Responsive: stack vertically on mobile */
+@media (max-width:1100px) {
+  .testimonials-grid {
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+  .testimonial {
+    width: 45vw;
+    min-width: 180px;
+    max-width: 260px;
+  }
+}
+@media (max-width:700px){
+  .testimonials-band{padding:32px 0}
+  .testimonials-grid{flex-direction:column;align-items:center;gap:16px;flex-wrap:nowrap;}
+  .testimonial{width:92%;min-width:220px;max-width:380px;}
+}
