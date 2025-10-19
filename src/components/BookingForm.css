@@ -1,0 +1,254 @@
+.booking-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  max-width: 520px;
+  width: 100%;
+  margin: 18px 0;
+  font-size: 18px; /* larger base font size for readability */
+  line-height: 1.35;
+}
+
+.booking-form label {
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.booking-form input[type="date"],
+.booking-form input[type="number"],
+.booking-form select,
+.booking-form input[type="text"] {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #7a7a7a;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 18px;
+  height: 52px; /* make the control taller for easier tapping and visibility */
+  box-sizing: border-box;
+}
+
+.date-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.date-input-wrapper .calendar-toggle {
+  position: absolute;
+  right: 10px; /* inside right of the input box */
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 3;
+  padding: 4px;
+}
+
+/* ensure the text doesn't overlap the right icon */
+.date-input-wrapper input[type="text"] {
+  padding-right: 48px; /* space for the right icon */
+}
+
+.calendar-popup {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0; /* align popup to the right side of the input */
+  z-index: 1000;
+  background: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  padding: 12px;
+  border-radius: 8px;
+  width: 360px; /* larger calendar width */
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.cal-nav {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.cal-month {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.calendar-weekday {
+  text-align: center;
+  font-weight: 700;
+  font-size: 13px;
+  color: #666;
+}
+
+.calendar-cell {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: #fafafa;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.calendar-cell:hover {
+  background: #e6f0f8;
+}
+
+.calendar-cell.empty {
+  background: transparent;
+  cursor: default;
+}
+
+.calendar-cell.disabled {
+  background: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+
+.calendar-cell.disabled:hover {
+  background: #f5f5f5;
+}
+
+
+.booking-form input[type="number"]::-webkit-inner-spin-button,
+.booking-form input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.validation-message {
+  margin-top: 8px;
+  background: #fff3cd; /* pale yellow */
+  color: #856404; /* dark yellow/brown */
+  border: 1px solid #ffeeba;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 18px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.booking-form select option {
+  font-size: 18px; /* make dropdown options larger */
+  padding: 8px 10px;
+}
+
+/* Make sure native dropdown arrow doesn't overlap text */
+.booking-form select {
+  padding-right: 42px;
+}
+
+/* Custom select (time/occasion) styling to match the date input */
+.select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.select-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border: 1px solid #7a7a7a;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 18px;
+  height: 52px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.select-arrow {
+  margin-left: 8px;
+  font-size: 18px;
+}
+
+.select-popup {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 1200;
+  background: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  border-radius: 8px;
+  max-height: 260px;
+  overflow: auto;
+}
+
+.select-option {
+  padding: 12px 14px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.select-option:hover {
+  background: #e6f0f8;
+}
+
+.booking-form input[type="submit"] {
+  background-color: #495e57; /* Little Lemon style-ish */
+  color: #fff;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.booking-form input[type="submit"]:hover {
+  background-color: #3f5247;
+}
+
+/* Ensure the form container inside the page is centered */
+.booking-form-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 8px 0 28px 0;
+}
+
+/* Responsive adjustments: slightly smaller controls on narrow screens */
+@media (max-width: 480px) {
+  .booking-form {
+    max-width: 100%;
+    font-size: 16px;
+    gap: 12px;
+  }
+
+  .booking-form input[type="date"],
+  .booking-form input[type="number"],
+  .booking-form select,
+  .booking-form input[type="text"] {
+    font-size: 16px;
+    height: 46px;
+  }
+
+  .booking-form input[type="submit"] {
+    font-size: 16px;
+    padding: 10px 12px;
+  }
+}
