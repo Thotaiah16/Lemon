@@ -4,47 +4,47 @@ import './Testimonials.css';
 export default function Testimonials() {
   return (
     <div className="testimonials-band">
-      <section className="testimonials">
-        <h2>Testimonials</h2>
-        <div className="testimonials-grid">
-          <article className="testimonial">
+      <section className="testimonials" aria-labelledby="testimonials-heading">
+        <h2 id="testimonials-heading">Testimonials</h2>
+        <div className="testimonials-grid" role="list" aria-label="Customer testimonials">
+          <article className="testimonial" role="listitem">
             <div className="testimonial-header">
-              <img src="/assets/Mario and Adrian A.jpg" alt="Mario"/>
-              <span className="testimonial-name">Mario</span>
+              <img src="/assets/Mario and Adrian A.jpg" alt="Mario, satisfied customer"/>
+              <span className="testimonial-name" aria-label="Customer name">Mario</span>
             </div>
             <blockquote>
               <p>"The food was exceptional and the service was top-notch. Highly recommend!"</p>
-              <cite>- Mario</cite>
+
             </blockquote>
           </article>
-          <article className="testimonial">
+          <article className="testimonial" role="listitem">
             <div className="testimonial-header">
-              <img src="/assets/Mario and Adrian b.jpg" alt="Adrian"/>
-              <span className="testimonial-name">Adrian</span>
+              <img src="/assets/Mario and Adrian b.jpg" alt="Adrian, satisfied customer"/>
+              <span className="testimonial-name" aria-label="Customer name">Adrian</span>
             </div>
             <blockquote>
               <p>"A memorable experience — cozy atmosphere and delicious dishes."</p>
-              <cite>- Adrian</cite>
+
             </blockquote>
           </article>
-          <article className="testimonial">
+          <article className="testimonial" role="listitem">
             <div className="testimonial-header">
-              <img src="/assets/Mario and Adrian A.jpg" alt="Mario"/>
-              <span className="testimonial-name">Mario</span>
+              <img src="/assets/Mario and Adrian A.jpg" alt="Mario, satisfied customer"/>
+              <span className="testimonial-name" aria-label="Customer name">Mario</span>
             </div>
             <blockquote>
               <p>"The food was exceptional and the service was top-notch. Highly recommend!"</p>
-              <cite>- Mario</cite>
+
             </blockquote>
           </article>
-          <article className="testimonial">
+          <article className="testimonial" role="listitem">
             <div className="testimonial-header">
-              <img src="/assets/Mario and Adrian b.jpg" alt="Adrian"/>
-              <span className="testimonial-name">Adrian</span>
+              <img src="/assets/Mario and Adrian b.jpg" alt="Adrian, satisfied customer"/>
+              <span className="testimonial-name" aria-label="Customer name">Adrian</span>
             </div>
             <blockquote>
               <p>"A memorable experience — cozy atmosphere and delicious dishes."</p>
-              <cite>- Adrian</cite>
+
             </blockquote>
           </article>
         </div>

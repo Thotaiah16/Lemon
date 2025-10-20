@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './BookingForm.css';
 
-export default function BookingForm({ 
-  availableTimes = ['17:00','18:00','19:00','20:00','21:00','22:00'], 
+export default function BookingForm({
+  availableTimes = ['17:00','18:00','19:00','20:00','21:00','22:00'],
   dispatch = () => {},
-  submitForm 
+  submitForm
 }) {
   // Controlled form state
   const [date, setDate] = useState('');
@@ -14,6 +14,14 @@ export default function BookingForm({
   const [guests, setGuests] = useState(1);
   const [guestError, setGuestError] = useState('');
   const [occasion, setOccasion] = useState('Birthday');
+
+  // Validation state
+  const [dateError, setDateError] = useState('');
+  const [timeError, setTimeError] = useState('');
+  const [touched, setTouched] = useState({
+    date: false,
+    guests: false
+  });
 
   // Keep a local copy of available times so we can optimistically remove a
   // booked time immediately, preventing immediate duplicate bookings while
@@ -36,14 +44,68 @@ export default function BookingForm({
 
   // availableTimes is now provided via props (lifted to Main)
 
+  // Validation functions
+  const validateDate = (dateValue) => {
+    if (!dateValue) {
+      return 'Please select a date for your reservation.';
+    }
+    const selectedDate = new Date(dateValue);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (selectedDate < today) {
+      return 'Please select a date that is today or in the future.';
+    }
+    return '';
+  };
+
+  const validateGuests = (guestValue) => {
+    if (!guestValue || guestValue === '' || guestValue === 0) {
+      return 'Please enter the number of guests.';
+    }
+    const n = Number(guestValue);
+    if (Number.isNaN(n) || n < 1) {
+      return 'At least 1 guest is required.';
+    }
+    if (n > 10) {
+      return 'Maximum 10 guests allowed.';
+    }
+    return '';
+  };
+
+  const validateTime = () => {
+    if (!localTimes || localTimes.length === 0) {
+      return 'No times available for this date. Please choose another date.';
+    }
+    if (!time) {
+      return 'Please select a time for your reservation.';
+    }
+    return '';
+  };
+
+  // Check if form is valid
+  const isFormValid = () => {
+    return (
+      date &&
+      !validateDate(date) &&
+      time &&
+      localTimes &&
+      localTimes.length > 0 &&
+      guests >= 1 &&
+      guests <= 10 &&
+      !validateGuests(guests)
+    );
+  };
+
   // UI state for custom pickers
   const [showTimeList, setShowTimeList] = useState(false);
   const [showOccasionList, setShowOccasionList] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const calendarRef = useRef(null);
   const timeRef = useRef(null);
   const occasionRef = useRef(null);
+  const abortControllerRef = useRef(null);
 
   useEffect(() => {
     function handleDocClick(e) {
@@ -64,9 +126,26 @@ export default function BookingForm({
   function handleSubmit(e) {
     e.preventDefault();
     
-    // Validate required fields
-    if (!date) {
-      alert('Please choose a date for your reservation.');
+    // Mark all fields as touched
+    setTouched({ date: true, guests: true });
+    
+    // Validate all fields
+    const dateValidation = validateDate(date);
+    const guestsValidation = validateGuests(guests);
+    const timeValidation = validateTime();
+
+    if (dateValidation) {
+      setDateError(dateValidation);
+      return;
+    }
+
+    if (timeValidation) {
+      setTimeError(timeValidation);
+      return;
+    }
+
+    if (guestsValidation) {
+      setGuestError(guestsValidation);
       return;
     }
 
@@ -74,7 +153,7 @@ export default function BookingForm({
     // locally. This avoids double-booking the same time when it's already
     // been removed.
     if (!localTimes.includes(time)) {
-      alert('The selected time is no longer available. Please choose a different time.');
+      setTimeError('The selected time is no longer available. Please choose a different time.');
       return;
     }
 
@@ -84,14 +163,29 @@ export default function BookingForm({
     // Use the submitForm function passed from Main component
     (async () => {
       setSubmitting(true);
+      setSubmitError('');
+      abortControllerRef.current = new AbortController();
       
       try {
+        // Add a small delay to show loading state (you can remove this in production)
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Check if cancelled during delay
+        if (abortControllerRef.current?.signal.aborted) {
+          return;
+        }
+        
         // Call submitForm which handles API submission and navigation
         const success = submitForm ? await submitForm(formData) : true;
-        
+
+        // Check if cancelled
+        if (abortControllerRef.current?.signal.aborted) {
+          return;
+        }
+
         if (success) {
           console.log('Reservation submitted:', formData);
-          
+
           // Inform parent that a time has been booked so shared availableTimes can update
           try {
             dispatch({ type: 'book-time', date, time });
@@ -100,22 +194,50 @@ export default function BookingForm({
           } catch (err) {
             // ignore if dispatch not provided
           }
-          
+
           // Reset form (form will be reset before navigation, but this handles cases where navigation fails)
           setDate('');
           setTime((localTimes && localTimes.length) ? localTimes[0] : '');
           setGuests(1);
           setOccasion('Birthday');
         } else {
-          alert('Failed to submit reservation. Please try again.');
+          setSubmitError('Failed to submit reservation. Please try again.');
         }
       } catch (err) {
+        if (abortControllerRef.current?.signal.aborted) {
+          return;
+        }
         console.error('Error submitting form:', err);
-        alert('Failed to submit reservation. Please try again.');
+        setSubmitError('Failed to submit reservation. Please try again.');
       } finally {
-        setSubmitting(false);
+        if (!abortControllerRef.current?.signal.aborted) {
+          setSubmitting(false);
+        }
+        abortControllerRef.current = null;
       }
     })();
+  }
+
+  // Add cancel function
+  function handleCancel() {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      setSubmitting(false);
+      setSubmitError('');
+    }
+  }
+
+  // Add reset function
+  function handleReset() {
+    setDate('');
+    setTime(localTimes && localTimes.length > 0 ? localTimes[0] : '17:00');
+    setGuests(1);
+    setOccasion('Birthday');
+    setDateError('');
+    setTimeError('');
+    setGuestError('');
+    setSubmitError('');
+    setTouched({ date: false, guests: false });
   }
 
   // Helpers for custom calendar popup
@@ -160,6 +282,12 @@ export default function BookingForm({
   function handleDateSelect(d) {
     const newDate = formatDateForInput(d);
     setDate(newDate);
+    setTouched(prev => ({ ...prev, date: true }));
+    
+    // Validate the selected date
+    const error = validateDate(newDate);
+    setDateError(error);
+    
     // inform parent reducer about date change so availableTimes can be updated
     try {
       dispatch({ type: 'date-changed', date: newDate });
@@ -180,23 +308,48 @@ export default function BookingForm({
   return (
     <div className="booking-form-wrapper">
       <form onSubmit={handleSubmit} className="booking-form" aria-label="Booking form">
-        <label htmlFor="res-date">Choose date</label>
+        <label htmlFor="res-date">Choose date *</label>
         <div className="date-input-wrapper" ref={calendarRef}>
           <input
             type="text"
             id="res-date"
             readOnly
+            required
             value={date ? formatDateDisplay(new Date(date)) : ''}
             placeholder="Select date"
             onClick={() => setShowCalendar((s) => !s)}
+            onBlur={() => setTouched(prev => ({ ...prev, date: true }))}
+            aria-required="true"
+            aria-invalid={touched.date && dateError ? "true" : "false"}
+            aria-describedby={dateError ? "date-error" : undefined}
           />
           <button type="button" className="calendar-toggle" onClick={() => setShowCalendar((s) => !s)} aria-label="Toggle calendar">📅</button>
           {showCalendar && (
             <div className="calendar-popup" role="dialog" aria-modal="false">
               <div className="calendar-header">
-                <button type="button" onClick={prevMonth} className="cal-nav">◀</button>
+                <button type="button" onClick={prevMonth} className="cal-nav" aria-label="Previous month">◀</button>
                 <div className="cal-month">{calendarDate.toLocaleString(undefined, { month: 'long', year: 'numeric' })}</div>
-                <button type="button" onClick={nextMonth} className="cal-nav">▶</button>
+                <button type="button" onClick={nextMonth} className="cal-nav" aria-label="Next month">▶</button>
+              </div>
+              <div style={{display: 'flex', justifyContent: 'center', padding: '8px 0'}}>
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    const today = new Date();
+                    handleDateSelect(today);
+                  }}
+                  style={{
+                    padding: '4px 12px',
+                    fontSize: '14px',
+                    backgroundColor: '#f0f0f0',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                  aria-label="Select today's date"
+                >
+                  📅 Today
+                </button>
               </div>
               <div className="calendar-grid">
                 <div className="calendar-weekday">Sun</div>
@@ -233,14 +386,21 @@ export default function BookingForm({
             </div>
           )}
         </div>
+        {touched.date && dateError && (
+          <div id="date-error" className="validation-message" role="alert" aria-live="polite">
+            ⚠ {dateError}
+          </div>
+        )}
 
-        <label htmlFor="res-time">Choose time</label>
+        <label htmlFor="res-time">Choose time *</label>
         <div className="select-wrapper" ref={timeRef}>
           <button
             type="button"
-            className="select-toggle"
+            id="res-time"
+            className={`select-toggle ${timeError ? 'has-error' : ''}`}
             onClick={() => setShowTimeList((s) => !s)}
             aria-haspopup="listbox"
+            aria-describedby={timeError ? "time-error" : undefined}
             disabled={!localTimes || localTimes.length === 0}
           >
             {localTimes && localTimes.length > 0 ? time : 'No times available'}
@@ -255,7 +415,11 @@ export default function BookingForm({
                     className="select-option"
                     role="option"
                     aria-selected={time === t}
-                    onClick={() => { setTime(t); setShowTimeList(false); }}
+                    onClick={() => { 
+                      setTime(t); 
+                      setShowTimeList(false);
+                      setTimeError('');
+                    }}
                   >
                     {t}
                   </div>
@@ -268,36 +432,53 @@ export default function BookingForm({
             </div>
           )}
         </div>
-        {date && localTimes && localTimes.length === 0 && (
-          <div style={{color: '#d63031', fontSize: '14px', marginTop: '4px'}}>
+        {timeError && (
+          <div id="time-error" className="validation-message" role="alert" aria-live="polite">
+            ⚠ {timeError}
+          </div>
+        )}
+        {date && localTimes && localTimes.length === 0 && !timeError && (
+          <div className="validation-message" role="alert" aria-live="polite">
             ⚠ All times are booked for this date. Please select another date.
           </div>
         )}
 
-        <label htmlFor="guests">Number of guests</label>
+        <label htmlFor="guests">Number of guests *</label>
         <input
           type="number"
           id="guests"
           placeholder="1"
           min="1"
           max="10"
+          required
           value={guests}
           onChange={(e) => {
             const raw = e.target.value;
             // parse to number; keep 0 if empty / invalid
             const n = raw === '' ? 0 : Number(raw);
             setGuests(Number.isNaN(n) ? 0 : n);
-            if (n < 1 || n > 10 || Number.isNaN(n)) {
-              setGuestError('Value must be between 1 and 10.');
-            } else {
-              setGuestError('');
-            }
+            
+            // Validate on change
+            const error = validateGuests(n);
+            setGuestError(error);
           }}
-          aria-describedby="guests-help"
+          onBlur={() => {
+            setTouched(prev => ({ ...prev, guests: true }));
+            const error = validateGuests(guests);
+            setGuestError(error);
+          }}
+          aria-required="true"
+          aria-invalid={touched.guests && guestError ? "true" : "false"}
+          aria-describedby={guestError ? "guests-error" : "guests-help"}
         />
         {guestError && (
-          <div id="guests-help" className="validation-message" role="alert" aria-live="assertive">
-            {guestError}
+          <div id="guests-error" className="validation-message" role="alert" aria-live="polite">
+            ⚠ {guestError}
+          </div>
+        )}
+        {!guestError && (
+          <div id="guests-help" style={{fontSize: '14px', color: '#666', marginTop: '4px'}}>
+            Please enter a number between 1 and 10
           </div>
         )}
 
@@ -324,13 +505,85 @@ export default function BookingForm({
           )}
         </div>
 
-        <div style={{display: 'flex', gap: '12px', alignItems: 'center'}}>
-          <input 
-            type="submit" 
-            value={submitting ? "Submitting..." : "Make Your reservation"} 
-            disabled={submitting || !date || !localTimes || localTimes.length === 0 || guests < 1 || guests > 10} 
-          />
+        <div style={{display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap', position: 'relative'}}>
+          <div style={{position: 'relative', display: 'inline-block'}}>
+            <input 
+              type="submit" 
+              value={submitting ? "Submitting..." : "Make Your reservation"} 
+              disabled={submitting || !isFormValid()} 
+              aria-disabled={submitting || !isFormValid()}
+              style={{paddingLeft: submitting ? '40px' : '16px'}}
+            />
+            {submitting && (
+              <span style={{
+                position: 'absolute',
+                left: '16px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                width: '16px',
+                height: '16px',
+                border: '2px solid #ffffff',
+                borderTopColor: 'transparent',
+                borderRadius: '50%',
+                animation: 'spin 0.8s linear infinite'
+              }} aria-hidden="true"></span>
+            )}
+          </div>
+          {submitting && (
+            <button 
+              type="button" 
+              onClick={handleCancel}
+              style={{
+                padding: '12px 20px',
+                backgroundColor: '#dc3545',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '16px',
+                fontWeight: '600'
+              }}
+              aria-label="Cancel reservation submission"
+            >
+              Cancel
+            </button>
+          )}
+          {!isFormValid() && !submitting && (
+            <span style={{fontSize: '14px', color: '#856404'}}>
+              Please fill in all required fields
+            </span>
+          )}
+          {!submitting && (date || guests !== 1 || occasion !== 'Birthday') && (
+            <button 
+              type="button" 
+              onClick={handleReset}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#6c757d',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '16px'
+              }}
+              aria-label="Clear form and start over"
+            >
+              Clear Form
+            </button>
+          )}
         </div>
+        {submitError && (
+          <div style={{
+            marginTop: '12px',
+            padding: '12px',
+            backgroundColor: '#f8d7da',
+            color: '#721c24',
+            borderRadius: '4px',
+            border: '1px solid #f5c6cb'
+          }} role="alert" aria-live="polite">
+            ⚠ {submitError}
+          </div>
+        )}
       </form>
     </div>
   );

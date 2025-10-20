@@ -12,7 +12,7 @@
 .testimonials h2{
   font-family: 'Markazi Text', serif;
   font-size:22px;
-  color:#2b2b2b;
+  color:#ffffffff;
   margin:0 0 28px 0;
 }
 .testimonials-grid{
@@ -65,7 +65,7 @@
 .testimonial-name {
   font-weight: 700;
   font-size: 15px;
-  color: #222;
+  color: #333333;
   margin: 0;
   white-space: nowrap;
 }

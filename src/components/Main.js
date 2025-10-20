@@ -6,13 +6,17 @@ import Testimonials from './Testimonials';
 import Chicago from './Chicago';
 import BookingPage from './BookingPage';
 import ConfirmedBooking from './ConfirmedBooking';
+import About from './About';
+import Menu from './Menu';
+import OrderOnline from './OrderOnline';
+import Login from './Login';
 import { initializeTimes, updateTimes } from '../state/bookingTimes';
 
 import heroImage from '../assets/restauranfood.jpg';
 
 function Home() {
   return (
-    <main className="site-main">
+    <main id="main-content" className="site-main" role="main">
       <Hero imageSrc={heroImage} />
       <Specials />
       <Testimonials />
@@ -183,8 +187,12 @@ export default function Main() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/menu" element={<Menu />} />
       <Route path="/booking" element={<BookingPage availableTimes={availableTimes} dispatch={dispatch} submitForm={submitForm} />} />
       <Route path="/confirmed" element={<ConfirmedBooking />} />
+      <Route path="/order" element={<OrderOnline />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/specials" element={<Specials />} />
     </Routes>
   );

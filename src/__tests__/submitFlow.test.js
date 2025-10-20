@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 import BookingForm from '../components/BookingForm';
 
 beforeAll(() => {
@@ -53,11 +53,10 @@ describe('submit flow with API stubs', () => {
     const submit = screen.getByDisplayValue('Make Your reservation');
     fireEvent.click(submit);
 
-    // wait for promise microtasks to flush
-    await new Promise(resolve => setTimeout(resolve, 0));
-
-    // Expect book-time dispatched at least once after successful submission
-    expect(mockDispatch).toHaveBeenCalledWith(expect.objectContaining({ type: 'book-time' }));
+    // wait for async state updates to complete
+    await waitFor(() => {
+      expect(mockDispatch).toHaveBeenCalledWith(expect.objectContaining({ type: 'book-time' }));
+    });
   });
 
   test('does not dispatch book-time when submitAPI fails', async () => {
@@ -87,7 +86,10 @@ describe('submit flow with API stubs', () => {
     const submit = screen.getByDisplayValue('Make Your reservation');
     fireEvent.click(submit);
 
-    await new Promise(resolve => setTimeout(resolve, 0));
+    // wait for async operations to complete
+    await waitFor(() => {
+      expect(mockSubmitForm).toHaveBeenCalled();
+    });
 
     // Should NOT dispatch book-time when submission fails
     expect(mockDispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: 'book-time' }));

@@ -30,6 +30,18 @@
   margin: 0;
 }
 
+.footer-links a,
+.footer-contact a {
+  text-decoration: none;
+  color: #fff;
+}
+
+.footer-links a:hover,
+.footer-contact a:hover {
+  text-decoration: none;
+  color: #F4CE14;
+}
+
 .footer-links li,
 .footer-contact li {
   font-family: 'Karla', sans-serif;
