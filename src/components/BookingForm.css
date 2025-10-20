@@ -27,6 +27,28 @@
   font-size: 18px;
   height: 52px; /* make the control taller for easier tapping and visibility */
   box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+/* Invalid input styling */
+.booking-form input[aria-invalid="true"],
+.booking-form button[aria-invalid="true"] {
+  border-color: #dc3545;
+  background-color: #fff5f5;
+}
+
+/* Valid input styling */
+.booking-form input[aria-invalid="false"]:not(:placeholder-shown),
+.booking-form button[aria-invalid="false"] {
+  border-color: #28a745;
+}
+
+/* Focus states */
+.booking-form input:focus,
+.booking-form select:focus,
+.booking-form button:focus {
+  outline: 2px solid #495e57;
+  outline-offset: 2px;
 }
 
 .date-input-wrapper {
@@ -144,8 +166,23 @@
   border: 1px solid #ffeeba;
   padding: 10px 12px;
   border-radius: 8px;
-  font-size: 18px;
+  font-size: 16px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .booking-form select option {
@@ -177,6 +214,12 @@
   height: 52px;
   box-sizing: border-box;
   cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.select-toggle.has-error {
+  border-color: #dc3545;
+  background-color: #fff5f5;
 }
 
 .select-arrow {
@@ -217,10 +260,17 @@
   cursor: pointer;
   font-weight: 700;
   font-size: 18px;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
 }
 
-.booking-form input[type="submit"]:hover {
+.booking-form input[type="submit"]:hover:not(:disabled) {
   background-color: #3f5247;
+}
+
+.booking-form input[type="submit"]:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 /* Ensure the form container inside the page is centered */
@@ -251,4 +301,10 @@
     font-size: 16px;
     padding: 10px 12px;
   }
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  0% { transform: translateY(-50%) rotate(0deg); }
+  100% { transform: translateY(-50%) rotate(360deg); }
 }

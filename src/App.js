@@ -5,11 +5,14 @@ import Footer from './components/Footer';
 
 function App() {
   return (
-    <>
+    <div className="app-container">
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
       <Header />
       <Main />
       <Footer />
-    </>
+    </div>
   );
 }
 

@@ -1,8 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function ConfirmedBooking() {
   return (
-    <main className="site-main" style={{
+    <main className="site-main" role="main" aria-labelledby="confirmation-heading" style={{
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -17,13 +18,13 @@ export default function ConfirmedBooking() {
         backgroundColor: '#f4f4f4',
         borderRadius: '16px',
         boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-      }}>
-        <h1 style={{
+      }} role="alert" aria-live="polite">
+        <h1 id="confirmation-heading" style={{
           fontSize: '36px',
           color: '#495e57',
           marginBottom: '20px'
         }}>
-          ✓ Booking Confirmed!
+          <span aria-label="Confirmed">✓</span> Booking Confirmed!
         </h1>
         <p style={{
           fontSize: '20px',
@@ -40,8 +41,9 @@ export default function ConfirmedBooking() {
         }}>
           We look forward to serving you.
         </p>
-        <a 
-          href="/" 
+        <Link 
+          to="/" 
+          aria-label="Return to home page"
           style={{
             display: 'inline-block',
             padding: '12px 24px',
@@ -57,7 +59,7 @@ export default function ConfirmedBooking() {
           onMouseOut={(e) => e.target.style.backgroundColor = '#495e57'}
         >
           Return to Home
-        </a>
+        </Link>
       </div>
     </main>
   );
